@@ -5,9 +5,11 @@ import Background from './Background';
 interface Props{
     label:string
     placeholderText:string
+    onchange?:(value:string) => void
+    value:string
 }
 
-const InputText = ({label,placeholderText}:Props) => {
+const InputText = ({label,placeholderText,onchange,value}:Props) => {
     return (
         <View >
             <Text>{label}</Text>
@@ -19,6 +21,8 @@ const InputText = ({label,placeholderText}:Props) => {
                 style={[styles.inputAndroid,(Platform.OS === 'ios')&& styles.inputIos]}
                 autoCapitalize='none'
                 autoCorrect={false}
+                onChangeText={onchange}
+                value={value}
             />
         </View>
     )
