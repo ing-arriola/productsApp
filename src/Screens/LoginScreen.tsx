@@ -1,18 +1,54 @@
-import React from 'react'
-import { View, Text } from 'react-native'
-import Background from '../Components/Background'
+import React, { useState } from 'react'
+import { View, Text, KeyboardAvoidingView, Platform } from 'react-native'
+import Background from '../Components/Background';
+import Button from '../Components/Button'
 import InputText from '../Components/InputText'
 import WhiteLogo from '../Components/WhiteLogo'
+import { useForm } from '../Hooks/UseForm';
 
 const LoginScreen = () => {
-    return (
-        <>
-            <Background/>
-            <WhiteLogo/>
-            <Text style={{color:'white',fontSize:20,fontWeight:'bold'}} >Login</Text>
-            <InputText label='Email' placeholderText='Enter your email' />
-            <InputText label='Password' placeholderText="Enter your password" />
-        </>
+
+    /* const [email, setemail] = useState('')
+    const [password, setpassword] = useState('')
+ */
+    const {email,password,onChange} = useForm({
+        email:'',
+        password:''
+    })
+
+    const onLogin = () => {
+        console.log({email,password})
+    }
+
+    return (              
+                <KeyboardAvoidingView
+                    behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                    enabled={Platform.OS === "ios" ? true : false}
+                style={{flex:1}} >
+                    <Background/>
+                    <View style={{paddingHorizontal:'8%',flex:1}} >
+                        <WhiteLogo/>
+                        <View style={{flex:2,justifyContent:'center'}} >
+                            <Text style={{color:'white',fontSize:20,fontWeight:'bold'}} >Login</Text>
+                            <InputText 
+                                onchange={(value:string) => onChange(value,'email')} 
+                                value={email} 
+                                label='Email' 
+                                placeholderText='Enter your email' />
+                            <InputText 
+                                onchange={(value:string) => onChange(value,'password')} 
+                                value={password} 
+                                label='Password' 
+                                placeholderText="Enter your password" />
+                            <View style={{alignItems:'center',width:'100%'}} >
+                                <Button onPress={onLogin} label='Login' />
+                            </View>
+                        </View>
+                        <View style={{flex:1}} />
+
+                    </View>
+                </KeyboardAvoidingView>
     )
 }
 
