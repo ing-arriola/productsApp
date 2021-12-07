@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, KeyboardAvoidingView, Platform, Keyboard } from 'react-native'
 import Background from '../Components/Background';
 import Button from '../Components/Button'
 import InputText from '../Components/InputText'
@@ -18,6 +18,7 @@ const LoginScreen = () => {
 
     const onLogin = () => {
         console.log({email,password})
+        Keyboard.dismiss()
     }
 
     return (              
@@ -40,7 +41,9 @@ const LoginScreen = () => {
                                 onchange={(value:string) => onChange(value,'password')} 
                                 value={password} 
                                 label='Password' 
-                                placeholderText="Enter your password" />
+                                placeholderText="Enter your password"
+                                secure={true}
+                                />
                             <View style={{alignItems:'center',width:'100%'}} >
                                 <Button onPress={onLogin} label='Login' />
                             </View>
