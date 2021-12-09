@@ -5,16 +5,25 @@ import MainNavigator from './src/Navigation/MainNavigator';
 import { createStore } from 'redux';
 import reducers from './store/reducers';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { AuthProvider } from './src/context/AuthContext';
+
+const AppState =  ({ children } : {children : JSX.Element | JSX.Element[] })  => {
+  return (
+    <AuthProvider>
+      {children}
+    </AuthProvider>
+  )
+
+}
 
 const App = () => {
   const store=createStore(reducers,composeWithDevTools())
   return (
-    <Provider store={store} >
       <NavigationContainer>
-        <MainNavigator/>
+        <AppState>
+          <MainNavigator/> 
+        </AppState>
       </NavigationContainer>
-    </Provider>
-  )
 }
 
 export default App
