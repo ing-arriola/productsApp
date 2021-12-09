@@ -7,12 +7,11 @@ const Background = () => {
             style={{
                 position:'absolute',
                 backgroundColor:'#5856D6',
-                top:-250,
-                width:"190%",
-                height:"130%",
-                transform:[
-                    {rotate:'-70deg'}
-                ]
+                top:-100,
+                height:'100%',
+                width:'100%',
+                borderBottomEndRadius:50,
+                borderBottomStartRadius:50
             }}
         />
     )
