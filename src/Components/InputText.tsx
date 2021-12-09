@@ -5,24 +5,25 @@ import Background from './Background';
 interface Props{
     label:string
     placeholderText:string
-    onchange?:(value:string) => void
+    onchange:(value:string) => void
     value:string
+    secure?:boolean
 }
 
-const InputText = ({label,placeholderText,onchange,value}:Props) => {
+const InputText = ({label,placeholderText,onchange,value,secure}:Props) => {
     return (
         <View >
             <Text>{label}</Text>
             <TextInput
                 placeholder={placeholderText}
                 placeholderTextColor='rgba(255,255,255,0.4)'
-                keyboardType='email-address'
                 underlineColorAndroid='white'
                 style={[styles.inputAndroid,(Platform.OS === 'ios')&& styles.inputIos]}
                 autoCapitalize='none'
                 autoCorrect={false}
                 onChangeText={onchange}
                 value={value}
+                secureTextEntry={secure}
             />
         </View>
     )
