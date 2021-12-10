@@ -25,10 +25,11 @@ const LoginScreen = ({navigation}:Props) => {
     }
 
     useEffect(() => {
+        if(errorMessage.length === 0 ) return
         Alert.alert('Error on login',errorMessage,[
             {
                 text:'OK',
-                onPress:()=>removeError()
+                onPress:removeError
             }
         ])
     }, [errorMessage])
