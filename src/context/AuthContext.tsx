@@ -27,7 +27,14 @@ export const AuthProvider = ({ children }:any) => {
     const [state,dispatch] = useReducer(authenticationReducer,authInitialState)
     const signIn = async( {correo,password}:SignInData ) => {
         try {
-            const res = await productsApi.post<SinginResponse>('/auth/login',{correo,password})
+            const {data} = await productsApi.post<SinginResponse>('/auth/login',{correo,password})
+            dispatch({
+                type:'signUp',
+                payload:{
+                    token:data.token,
+                    user:data.usuario
+                }
+            })
         } catch (error) {
             console.log(error)
         }
