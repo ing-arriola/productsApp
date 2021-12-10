@@ -1,23 +1,26 @@
-import React, { useState } from 'react'
+import { StackScreenProps } from '@react-navigation/stack';
+import React, { useContext, useState } from 'react'
 import { View, Text, KeyboardAvoidingView, Platform, Keyboard } from 'react-native'
 import Background from '../Components/Background';
 import Button from '../Components/Button'
 import InputText from '../Components/InputText'
 import WhiteLogo from '../Components/WhiteLogo'
 import { useForm } from '../Hooks/UseForm';
+import { AuthContext } from '../context/AuthContext';
 
-const LoginScreen = () => {
+interface Props extends StackScreenProps<any,any> {}
 
-    /* const [email, setemail] = useState('')
-    const [password, setpassword] = useState('')
- */
+const LoginScreen = ({navigation}:Props) => {
+
+    const {signIn} = useContext(AuthContext)
+
     const {email,password,onChange} = useForm({
         email:'',
         password:''
     })
 
     const onLogin = () => {
-        console.log({email,password})
+        signIn({correo:email,password})
         Keyboard.dismiss()
     }
 
@@ -46,6 +49,9 @@ const LoginScreen = () => {
                                 />
                             <View style={{alignItems:'center',width:'100%'}} >
                                 <Button onPress={onLogin} label='Login' />
+                            </View>
+                            <View style={{alignItems:'center',width:'100%'}} >
+                                <Button onPress={() => navigation.replace('RegisterScreen')} label='Register' />
                             </View>
                         </View>
                         <View style={{flex:1}} />
