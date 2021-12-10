@@ -1,4 +1,5 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import productsApi from "../api/ProductsApi";
 import { SinginResponse, Usuario, SignInData } from '../interfaces/authInterface';
 import { authenticationReducer, AuthState } from './authReducer';
@@ -25,6 +26,24 @@ export const AuthContext = createContext({} as AuthContextProps )
 
 export const AuthProvider = ({ children }:any) => {
     const [state,dispatch] = useReducer(authenticationReducer,authInitialState)
+
+    const getTokenFromStorage = async() =>{
+        try {
+            const res = await AsyncStorage.getItem('token')  
+            if (!res) return dispatch({type:'notAuthenticated'})  
+            
+        } catch (error) {
+            
+        }
+        
+    }
+
+    useEffect(() => {
+        getTokenFromStorage()
+
+        
+    }, [])
+
     const signIn = async( {correo,password}:SignInData ) => {
         try {
             const {data} = await productsApi.post<SinginResponse>('/auth/login',{correo,password})
@@ -35,6 +54,7 @@ export const AuthProvider = ({ children }:any) => {
                     user:data.usuario
                 }
             })
+            await AsyncStorage.setItem('token',data.token)
         } catch (error:any) {
             dispatch({
                 type:'addError',
