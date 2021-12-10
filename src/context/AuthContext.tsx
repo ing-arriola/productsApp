@@ -35,8 +35,11 @@ export const AuthProvider = ({ children }:any) => {
                     user:data.usuario
                 }
             })
-        } catch (error) {
-            console.log(error)
+        } catch (error:any) {
+            dispatch({
+                type:'addError',
+                payload:error.response.data.msg || 'Upps! We have a problem'
+            })
         }
     } 
     const signUp = () => {}
