@@ -44,8 +44,7 @@ export const AuthProvider = ({ children }:any) => {
     } 
     const signUp = () => {}
     const logOut = () => {}
-    const removeError = () => {}
-
+    const removeError = () => { dispatch({type:'removeError'}) }
     return (
         <AuthContext.Provider value={{
             ...state,
