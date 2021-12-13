@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useReducer } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import productsApi from "../api/ProductsApi";
-import { SinginResponse, Usuario, SignInData } from '../interfaces/authInterface';
+import { SinginResponse, Usuario, SignInData, RegisterData } from '../interfaces/authInterface';
 import { authenticationReducer, AuthState } from './authReducer';
 
 type AuthContextProps = {
@@ -10,7 +10,7 @@ type AuthContextProps = {
     user:Usuario | null
     status : 'cheking' | 'authenticated' | 'not-authenticated'
     signIn: (signInInfo: SignInData) => void
-    signUp: () => void
+    signUp: (registerInfo: RegisterData) => void
     logOut: () => void
     removeError : () => void
 }
@@ -70,7 +70,24 @@ export const AuthProvider = ({ children }:any) => {
             })
         }
     } 
-    const signUp = () => {}
+    const signUp = async( {nombre,correo,password}:RegisterData ) => {
+        try {
+            const {data} = await productsApi.post<SinginResponse>('/usuarios',{correo,password,nombre})
+            dispatch({
+                type:'signUp',
+                payload:{
+                    token:data.token,
+                    user:data.usuario
+                }
+            })
+            await AsyncStorage.setItem('token',data.token)
+        } catch (error:any) {
+            dispatch({
+                type:'addError',
+                payload:error.response.data.erros[0].msg || 'Upps! there was a problem'
+            })
+        }
+    }
     const logOut = async() => {
         const res = await AsyncStorage.removeItem('token')
         dispatch({type:'logout'})
