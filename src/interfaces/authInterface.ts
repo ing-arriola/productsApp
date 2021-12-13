@@ -4,6 +4,12 @@ export interface SignInData{
     password:string
 }
 
+export interface RegisterData{
+    correo:string
+    password:string
+    nombre:string
+}
+
 export interface SinginResponse {
     usuario: Usuario;
     token:   string;
