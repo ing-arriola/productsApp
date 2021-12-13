@@ -1,14 +1,16 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import React from 'react'
-import { View, Text, KeyboardAvoidingView, Platform, Keyboard,TouchableOpacity } from 'react-native'
+import React, { useContext, useEffect } from 'react'
+import { View, Text, KeyboardAvoidingView, Platform, Keyboard,TouchableOpacity, Alert } from 'react-native'
 import Button from '../Components/Button'
 import InputText from '../Components/InputText'
 import WhiteLogo from '../Components/WhiteLogo'
 import { useForm } from '../Hooks/UseForm'
+import { AuthContext } from '../context/AuthContext';
 
 interface Props extends StackScreenProps<any,any> {}
 
 const RegisterScreen = ({navigation}:Props) => {
+    const {signUp,errorMessage,removeError} = useContext(AuthContext)
     const {email,password,name,onChange} = useForm({
         email:'',
         password:'',
@@ -18,7 +20,19 @@ const RegisterScreen = ({navigation}:Props) => {
     const onRegister = () => {
         console.log({email,password})
         Keyboard.dismiss()
+        signUp({correo:email,password,nombre:name})   
     }
+
+    useEffect(() => {
+        if(errorMessage.length === 0 ) return
+        Alert.alert('Error on login',errorMessage,[
+            {
+                text:'OK',
+                onPress:removeError
+            }
+        ])
+    }, [errorMessage])
+
     return (
         <KeyboardAvoidingView
                     behavior={Platform.OS == "ios" ? "padding" : "height"}
