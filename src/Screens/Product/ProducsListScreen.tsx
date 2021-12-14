@@ -2,7 +2,12 @@ import React, { useContext } from 'react'
 import { View, Text, FlatList } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ProductContext } from '../../context/ProductsContext';
-const ProducsListScreen = () => {
+import { StackScreenProps } from '@react-navigation/stack';
+import { ProductsStackParams } from '../../Navigation/ProductsNavigation';
+
+interface Props extends StackScreenProps<ProductsStackParams, 'ProducsListScreen'>{}
+
+const ProducsListScreen = ({navigation}:Props) => {
 
     const {loadProducts,products} = useContext(ProductContext)
     
@@ -15,6 +20,7 @@ const ProducsListScreen = () => {
                 renderItem={({item}) => (
                     <TouchableOpacity
                         activeOpacity={0.7}
+                        onPress={() => navigation.navigate('SingleProductScreen',{id:item._id,name:item.nombre}) }
                     >
                         <Text>{item.nombre}</Text>
                     </TouchableOpacity>
