@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, Button } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack';
+import {Picker} from '@react-native-picker/picker';
 import { ProductsStackParams } from '../../Navigation/ProductsNavigation';
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -8,7 +9,7 @@ interface Props extends StackScreenProps< ProductsStackParams,'SingleProductScre
 
 const SingleProductScreen = ({navigation,route}:Props) => {
     const { name,id }=route.params
-
+    const [selectedCategory, setselectedCategory] = useState()
     useEffect(() => {
         navigation.setOptions({
             title:name
@@ -25,7 +26,17 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                         placeholder='enter product name'
                     />
                 </View>
-                <Text>Select category:</Text>
+                <View>
+                    <Text>Select category:</Text>
+                    <Picker
+                        selectedValue={selectedCategory}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setselectedCategory(itemValue)
+                        }>
+                        <Picker.Item label="Java" value="java" />
+                        <Picker.Item label="JavaScript" value="js" />
+                    </Picker>
+                </View>
                 <Button
                     title='Save'
                     color='#5856D6'
