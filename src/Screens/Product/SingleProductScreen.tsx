@@ -5,6 +5,7 @@ import {Picker} from '@react-native-picker/picker';
 import { ProductsStackParams } from '../../Navigation/ProductsNavigation';
 import { TextInput } from 'react-native-gesture-handler';
 import { useCategories } from '../../Hooks/useCategories';
+import { useForm } from '../../Hooks/UseForm';
 
 interface Props extends StackScreenProps< ProductsStackParams,'SingleProductScreen' >{}
 
@@ -13,6 +14,13 @@ const SingleProductScreen = ({navigation,route}:Props) => {
     const [selectedCategory, setselectedCategory] = useState()
 
     const {categories,isLoading} = useCategories()
+
+    const {_id, categoryId, itemName, img, form, onChange} = useForm({
+        _id:id,
+        categoryId:'',
+        itemName:name,
+        img:''
+    })
 
     useEffect(() => {
         navigation.setOptions({
@@ -28,6 +36,8 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                     <TextInput
                         style={styles.textInput}
                         placeholder='enter product name'
+                        value={name}
+                        onChangeText={(value)=> onChange(value,'itemName')}
                     />
                 </View>
                 <View>
@@ -56,7 +66,7 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                     color='#5856D6'
                 />
             </View>
-            
+            <Text>{JSON.stringify(form,null,2)}</Text>
             </ScrollView>
 
 
