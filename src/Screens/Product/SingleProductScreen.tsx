@@ -4,12 +4,16 @@ import { StackScreenProps } from '@react-navigation/stack';
 import {Picker} from '@react-native-picker/picker';
 import { ProductsStackParams } from '../../Navigation/ProductsNavigation';
 import { TextInput } from 'react-native-gesture-handler';
+import { useCategories } from '../../Hooks/useCategories';
 
 interface Props extends StackScreenProps< ProductsStackParams,'SingleProductScreen' >{}
 
 const SingleProductScreen = ({navigation,route}:Props) => {
     const { name,id }=route.params
     const [selectedCategory, setselectedCategory] = useState()
+
+    const {categories,isLoading} = useCategories()
+
     useEffect(() => {
         navigation.setOptions({
             title:name
@@ -33,8 +37,9 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                         onValueChange={(itemValue, itemIndex) =>
                             setselectedCategory(itemValue)
                         }>
-                        <Picker.Item label="Java" value="java" />
-                        <Picker.Item label="JavaScript" value="js" />
+                        {categories.map(item => (
+                            <Picker.Item label={item.nombre} value={item._id} key={item._id} />
+                        ))}
                     </Picker>
                 </View>
                 <Button
