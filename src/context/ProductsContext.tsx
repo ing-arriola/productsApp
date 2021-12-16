@@ -31,8 +31,9 @@ const ProductsProvider = ({children}:any) => {
     const addProduct = async ( categoryId:string, productName:string ) => {}
     const updateProduct = async ( categoryId:string, productName:string, productId:string) => {}
     const deleteProduct = async ( productId:string ) => {}
-    const loadProductById = async ( productId:string ) => {
-        throw new Error('Wait for it')
+    const loadProductById = async ( productId:string ):Promise<Producto>=> {
+        const res = await productsApi.get<Producto>(`/productos/${productId}`)
+        return res.data
     }
     const updaloadImage= async(data:any, id:string) => {}
     return (
