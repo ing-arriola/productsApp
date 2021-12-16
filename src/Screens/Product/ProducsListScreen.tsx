@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { View, Text, FlatList } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ProductContext } from '../../context/ProductsContext';
@@ -11,6 +11,19 @@ const ProducsListScreen = ({navigation}:Props) => {
 
     const {loadProducts,products} = useContext(ProductContext)
     
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight:() => (
+                <TouchableOpacity
+                    activeOpacity={0.75}
+                    style={{marginRight:10}}
+                    onPress={()=> navigation.navigate('SingleProductScreen',{name:'New Product'})}
+                >
+                    <Text>Add product</Text>
+                </TouchableOpacity>
+            )
+        })
+    }, [])
 
     return (
         <View style={{flex:1, marginHorizontal:10}} >
