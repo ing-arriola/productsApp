@@ -1,62 +1,45 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { View, Text, StyleSheet, ScrollView, Button, Image } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack';
 import {Picker} from '@react-native-picker/picker';
 import { ProductsStackParams } from '../../Navigation/ProductsNavigation';
 import { TextInput } from 'react-native-gesture-handler';
 import { useCategories } from '../../Hooks/useCategories';
 import { useForm } from '../../Hooks/UseForm';
+import { ProductContext } from '../../context/ProductsContext';
 
 interface Props extends StackScreenProps< ProductsStackParams,'SingleProductScreen' >{}
 
 const SingleProductScreen = ({navigation,route}:Props) => {
     const { name,id }=route.params
-    const [selectedCategory, setselectedCategory] = useState()
 
     const {categories,isLoading} = useCategories()
-
-    const {_id, categoryId, itemName, img, form, onChange} = useForm({
+    const { loadProductById } = useContext(ProductContext)
+    
+    const {_id, categoryId, itemName, img, form, onChange, setFormValue} = useForm({
         _id:id,
         categoryId:'',
         itemName:name,
         img:''
     })
 
-    useEffect(() => {
-        navigation.setOptions({
-            title:name
-        })
-    }, [])
+    const loadProduct = async() => {
+        if(id){
+            const res = await loadProductById(id)
+            setFormValue({
+                _id:id,
+                categoryId:res.categoria._id,
+                img:res.img || '',
+                itemName:res.nombre
+            })
+        }
+        
+    }
 
-    return (
-        <View style={styles.container} >
-            <ScrollView contentContainerStyle={{justifyContent:'space-around',flex:1}}  >
-                <View>
-                    <Text>Product name:</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder='enter product name'
-                        value={name}
-                        onChangeText={(value)=> onChange(value,'itemName')}
-                    />
-                </View>
-                <View>
-                    <Text>Select category:</Text>
-                    <Picker
-                        selectedValue={selectedCategory}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setselectedCategory(itemValue)
-                        }>
-                        {categories.map(item => (
-                            <Picker.Item label={item.nombre} value={item._id} key={item._id} />
-                        ))}
-                    </Picker>
-                </View>
-                <Button
-                    title='Save'
-                    color='#5856D6'
-                />
-            <View style={{flexDirection:'row',justifyContent:'space-around'}} >
+    const ImageButtons = () => {
+        if(id){
+            return(
+                <View style={{flexDirection:'row',justifyContent:'space-around'}} >
                 <Button
                     title='Open camera'
                     color='#5856D6'
@@ -66,7 +49,68 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                     color='#5856D6'
                 />
             </View>
-            <Text>{JSON.stringify(form,null,2)}</Text>
+            )
+        }
+    }
+
+    useEffect(() => {
+        navigation.setOptions({
+            title: itemName ? itemName : 'Please set a name'
+        })
+        
+    }, [itemName])
+
+
+    useEffect(() => {
+        loadProduct()
+    }, [])
+
+    const saveOrUpdate = () => {
+        if(id){
+            console.log('updating')
+        }else{
+            console.log('creating')
+        }
+    }
+
+    return (
+        <View style={styles.container} >
+            <ScrollView contentContainerStyle={{justifyContent:'space-around',flex:1}}  >
+                <View>
+                    <Text>Product name:</Text>
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder='enter product name'
+                        value={itemName }
+                        onChangeText={(value)=> onChange(value,'itemName')}
+                    />
+                </View>
+                <View>
+                    <Text>Select category:</Text>
+                    <Picker
+                        selectedValue={categoryId}
+                        onValueChange={(itemValue) =>
+                            onChange(itemValue,'categoryId')
+                        }>
+                        {categories.map(item => (
+                            <Picker.Item label={item.nombre} value={item._id} key={item._id} />
+                        ))}
+                    </Picker>
+                </View>
+                {
+                    img.length>0 && (
+                        <Image
+                            source={{uri:img}}
+                            style={{height:300,width:'100%'}}
+                        />
+                    )
+                }
+                <Button
+                    title='Save'
+                    color='#5856D6'
+                    onPress={saveOrUpdate}
+                />
+                {ImageButtons()}
             </ScrollView>
 
 
