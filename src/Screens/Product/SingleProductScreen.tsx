@@ -14,7 +14,7 @@ const SingleProductScreen = ({navigation,route}:Props) => {
     const { name,id }=route.params
 
     const {categories,isLoading} = useCategories()
-    const { loadProductById } = useContext(ProductContext)
+    const { loadProductById, addProduct, updateProduct } = useContext(ProductContext)
     
     const {_id, categoryId, itemName, img, form, onChange, setFormValue} = useForm({
         _id:id,
@@ -30,7 +30,7 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                 _id:id,
                 categoryId:res.categoria._id,
                 img:res.img || '',
-                itemName:res.nombre
+                itemName:res.nombre || ''
             })
         }
         
@@ -66,11 +66,12 @@ const SingleProductScreen = ({navigation,route}:Props) => {
     }, [])
 
     const saveOrUpdate = () => {
-        if(id){
-            console.log('updating')
-        }else{
-            console.log('creating')
-        }
+        if(itemName)
+            if(id ){
+                updateProduct(categoryId,itemName,id)
+            }else{
+                addProduct(categoryId,itemName)
+            }
     }
 
     return (
