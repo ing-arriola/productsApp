@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react'
 import productsApi from '../api/ProductsApi';
-import { Producto, ProductsResponse } from '../interfaces/productsInterface';
+import { AddProductResponse, Producto, ProductsResponse } from '../interfaces/productsInterface';
 
 type ProductsContextProps = {
     products:Producto[]
@@ -28,8 +28,17 @@ const ProductsProvider = ({children}:any) => {
         console.log(res.data.productos)
 
     }
-    const addProduct = async ( categoryId:string, productName:string ) => {}
-    const updateProduct = async ( categoryId:string, productName:string, productId:string) => {}
+    const addProduct = async ( categoryId:string, productName:string ) => {
+        const res = await productsApi.post<Producto>('/products',{
+            nombre:productName,
+            categoria:categoryId
+        })
+        setproducts([...products,res.data])
+    }
+    const updateProduct = async ( categoryId:string, productName:string, productId:string) => {
+        console.log('UPDATE PRODUCT')
+        console.log({categoryId,productName})
+    }
     const deleteProduct = async ( productId:string ) => {}
     const loadProductById = async ( productId:string ):Promise<Producto>=> {
         const res = await productsApi.get<Producto>(`/productos/${productId}`)
