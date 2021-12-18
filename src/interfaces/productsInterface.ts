@@ -11,7 +11,7 @@ export interface Producto {
     nombre:    string;
     categoria: Categoria;
     usuario:   Categoria;
-    img:       string;
+    img?:       string;
 }
 
 export interface Categoria {
