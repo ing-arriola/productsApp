@@ -1,11 +1,11 @@
 import React, { createContext, useEffect, useState } from 'react'
 import productsApi from '../api/ProductsApi';
-import { AddProductResponse, Producto, ProductsResponse } from '../interfaces/productsInterface';
+import { Producto, ProductsResponse } from '../interfaces/productsInterface';
 
 type ProductsContextProps = {
     products:Producto[]
     loadProducts: () => Promise<void>
-    addProduct : ( categoryId:string, productName:string ) => Promise<void>
+    addProduct : ( categoryId:string, productName:string ) => Promise<Producto | undefined>
     updateProduct : ( categoryId:string, productName:string, productId:string) => Promise<void>
     deleteProduct : ( productId:string ) => Promise<void>
     loadProductById : ( productId:string ) => Promise<Producto>
@@ -17,27 +17,44 @@ export const ProductContext = createContext({} as ProductsContextProps )
 const ProductsProvider = ({children}:any) => {
     const [products, setproducts] = useState<Producto[]>([])
 
+    const loadProducts = async () => {
+        const res = await productsApi.get<ProductsResponse>('/productos')
+        //setproducts([...products,...res.data.productos])
+        setproducts(res.data.productos)
+        console.log(res.data.productos.length)
+    }
+
     useEffect(() => {
         loadProducts()
     }, [])
 
-    const loadProducts = async () => {
-        const res = await productsApi.get<ProductsResponse>('/productos?limite=5')
-        //setproducts([...products,...res.data.productos])
-        setproducts(res.data.productos)
-        console.log(res.data.productos)
-
-    }
     const addProduct = async ( categoryId:string, productName:string ) => {
-        const res = await productsApi.post<Producto>('/products',{
-            nombre:productName,
-            categoria:categoryId
-        })
-        setproducts([...products,res.data])
+        console.log({categoryId,productName})
+        try {
+            const res = await productsApi.post<Producto>('/productos',{
+                nombre:productName,
+                categoria:categoryId
+            })
+            setproducts([...products,res.data])    
+            return res.data
+        } catch (error) {
+            console.log(error)
+        }
+        
+        
     }
     const updateProduct = async ( categoryId:string, productName:string, productId:string) => {
-        console.log('UPDATE PRODUCT')
-        console.log({categoryId,productName})
+        try {
+            const res = await productsApi.put<Producto>(`/productos/${productId}`,{
+                nombre:productName,
+                categoria:categoryId
+            })
+            setproducts(
+                products.map( prod =>  (prod._id === productId) ? res.data : prod)
+            )
+        } catch (error) {
+            console.log(error)
+        }
     }
     const deleteProduct = async ( productId:string ) => {}
     const loadProductById = async ( productId:string ):Promise<Producto>=> {
