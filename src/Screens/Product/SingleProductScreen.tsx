@@ -37,7 +37,7 @@ const SingleProductScreen = ({navigation,route}:Props) => {
     }
 
     const ImageButtons = () => {
-        if(id){
+        if(_id){
             return(
                 <View style={{flexDirection:'row',justifyContent:'space-around'}} >
                 <Button
@@ -65,12 +65,13 @@ const SingleProductScreen = ({navigation,route}:Props) => {
         loadProduct()
     }, [])
 
-    const saveOrUpdate = () => {
+    const saveOrUpdate = async () => {
         if(itemName)
             if(id ){
                 updateProduct(categoryId,itemName,id)
             }else{
-                addProduct(categoryId,itemName)
+                const res = await addProduct(categoryId,itemName)
+                res?._id && onChange(res._id, '_id')
             }
     }
 
