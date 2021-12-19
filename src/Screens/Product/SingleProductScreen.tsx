@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ScrollView, Button, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Button, Image, ActivityIndicator } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack';
 import {Picker} from '@react-native-picker/picker';
 import { ProductsStackParams } from '../../Navigation/ProductsNavigation';
@@ -16,10 +16,10 @@ const SingleProductScreen = ({navigation,route}:Props) => {
     const {categories,isLoading} = useCategories()
     const { loadProductById, addProduct, updateProduct } = useContext(ProductContext)
     
-    const {_id, categoryId, itemName, img, form, onChange, setFormValue} = useForm({
+    const {_id, categoryId, itemName, img, onChange, setFormValue} = useForm({
         _id:id,
         categoryId:'',
-        itemName:name,
+        itemName:id ? name : '',
         img:''
     })
 
@@ -88,14 +88,29 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                 </View>
                 <View>
                     <Text>Select category:</Text>
+                    
                     <Picker
                         selectedValue={categoryId}
                         onValueChange={(itemValue) =>
                             onChange(itemValue,'categoryId')
                         }>
-                        {categories.map(item => (
+                        {!categoryId && itemName !== ''
+                        ? <View style={{ 
+                                flex: 1, 
+                                justifyContent: 'center', 
+                                alignItems: 'center'
+                                }}
+                            >
+                                <ActivityIndicator
+                                    size={40}
+                                    color={'black'}
+                                />
+                            </View>
+                        :
+                        categories.map(item => (
                             <Picker.Item label={item.nombre} value={item._id} key={item._id} />
-                        ))}
+                        ))
+                        }
                     </Picker>
                 </View>
                 {
