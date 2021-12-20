@@ -19,7 +19,7 @@ const ProducsListScreen = ({navigation}:Props) => {
                     style={{marginRight:10}}
                     onPress={()=> navigation.navigate('SingleProductScreen',{name:'New Product'})}
                 >
-                    <Text>Add product</Text>
+                    <Text style={{color:'black'}} >Add product</Text>
                 </TouchableOpacity>
             )
         })
@@ -41,7 +41,7 @@ const ProducsListScreen = ({navigation}:Props) => {
                         activeOpacity={0.7}
                         onPress={() => navigation.navigate('SingleProductScreen',{id:item._id,name:item.nombre}) }
                     >
-                        <Text>{item.nombre}</Text>
+                        <Text style={{color:'black'}} >{item.nombre}</Text>
                     </TouchableOpacity>
                 )}
                 ItemSeparatorComponent={()=>
