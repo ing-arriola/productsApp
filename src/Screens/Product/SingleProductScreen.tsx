@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, Button, Image, ActivityIndicator } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack';
 import {Picker} from '@react-native-picker/picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { ProductsStackParams } from '../../Navigation/ProductsNavigation';
 import { TextInput } from 'react-native-gesture-handler';
 import { useCategories } from '../../Hooks/useCategories';
@@ -14,7 +15,8 @@ const SingleProductScreen = ({navigation,route}:Props) => {
     const { name,id }=route.params
 
     const {categories,isLoading} = useCategories()
-    const { loadProductById, addProduct, updateProduct } = useContext(ProductContext)
+    const [tempImage, settempImage] = useState<string>('')
+    const { loadProductById, addProduct, updateProduct, updaloadImage } = useContext(ProductContext)
     
     const {_id, categoryId, itemName, img, onChange, setFormValue} = useForm({
         _id:id,
@@ -22,6 +24,19 @@ const SingleProductScreen = ({navigation,route}:Props) => {
         itemName:id ? name : '',
         img:''
     })
+
+    const takePhoto = () => {
+        launchCamera({
+            mediaType:'photo',
+            quality:0.6
+        },(res)=>{
+            if (res.didCancel) return
+            if(res.assets){
+                res.assets[0].uri && settempImage(res.assets[0].uri)
+            }
+            
+        })
+    }
 
     const loadProduct = async() => {
         if(id){
@@ -43,6 +58,7 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                 <Button
                     title='Open camera'
                     color='#5856D6'
+                    onPress={takePhoto}
                 />
                 <Button
                     title='Go to gallery'
@@ -75,6 +91,7 @@ const SingleProductScreen = ({navigation,route}:Props) => {
             }
     }
 
+    
     return (
         <View style={styles.container} >
             <ScrollView contentContainerStyle={{justifyContent:'space-around',flex:1}}  >
@@ -88,9 +105,10 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                     />
                 </View>
                 <View>
-                    <Text>Select category:</Text>
+                    <Text style={{color:'black'}} >Select category:</Text>
                     
                     <Picker
+                        style={{color:'black'}}
                         selectedValue={categoryId}
                         onValueChange={(itemValue) =>
                             onChange(itemValue,'categoryId')
@@ -118,6 +136,14 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                     img.length>0 && (
                         <Image
                             source={{uri:img}}
+                            style={{height:300,width:'100%'}}
+                        />
+                    )
+                }
+                {
+                    tempImage.length>0 && (
+                        <Image
+                            source={{uri:tempImage}}
                             style={{height:300,width:'100%'}}
                         />
                     )
