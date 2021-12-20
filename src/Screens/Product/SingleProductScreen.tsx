@@ -33,6 +33,23 @@ const SingleProductScreen = ({navigation,route}:Props) => {
             if (res.didCancel) return
             if(res.assets){
                 res.assets[0].uri && settempImage(res.assets[0].uri)
+                res.assets[0] && _id && updaloadImage(res,_id) 
+                
+            }
+            
+        })
+    }
+
+    const getImageFromGallery = () => {
+        launchImageLibrary({
+            mediaType:'photo',
+            quality:0.6
+        },(res)=>{
+            if (res.didCancel) return
+            if(res.assets){
+                res.assets[0].uri && settempImage(res.assets[0].uri)
+                res.assets[0] && _id && updaloadImage(res,_id) 
+                
             }
             
         })
@@ -63,6 +80,7 @@ const SingleProductScreen = ({navigation,route}:Props) => {
                 <Button
                     title='Go to gallery'
                     color='#5856D6'
+                    onPress={getImageFromGallery}
                 />
             </View>
             )
@@ -172,7 +190,8 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius:5,
         borderColor:'rgba(0,0,0,0.2)',
-        marginTop:3
+        marginTop:3, 
+        color:'black'
     }
 });
 
